@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spotlight Energy — AI Opportunity Survey</title>
+<style>
+  :root {
+    --navy: #1a1a2e;
+    --blue: #1a1a2e;
+    --accent: #e8622a;
+    --accent-light: #fdf0eb;
+    --teal: #1d9e75;
+    --teal-light: #e1f5ee;
+    --orange: #e8622a;
+    --orange-light: #fdf0eb;
+    --text: #1a1a2e;
+    --muted: #6b7280;
+    --border: #e2e8f0;
+    --bg: #f8f9fb;
+    --white: #ffffff;
+    --red: #dc2626;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* HEADER */
+  .header { background: #1a1a2e; color: white; padding: 0; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 0 rgba(232,98,42,0.4); }
+  .header-inner { max-width: 780px; margin: 0 auto; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; }
+  .header h1 { font-size: 17px; font-weight: 600; letter-spacing: -0.2px; }
+  .progress-wrap { display: flex; align-items: center; gap: 10px; }
+  .progress-bar { width: 140px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; }
+  .progress-fill { height: 100%; background: #e8622a; border-radius: 2px; transition: width 0.4s ease; }
+  .progress-label { font-size: 12px; color: rgba(255,255,255,0.7); white-space: nowrap; }
+
+  /* WRAP */
+  .wrap { max-width: 780px; margin: 0 auto; padding: 32px 24px 80px; }
+
+  /* SECTION CARDS */
+  .section-card { background: var(--white); border-radius: 12px; border: 1px solid var(--border); padding: 28px 32px; margin-bottom: 20px; }
+  .section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+  .section-icon { width: 36px; height: 36px; border-radius: 8px; background: #fdf0eb; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .section-title { font-size: 15px; font-weight: 600; color: var(--navy); }
+  .section-badge { font-size: 11px; padding: 3px 8px; border-radius: 20px; font-weight: 500; margin-left: auto; }
+  .badge-all { background: var(--accent-light); color: var(--blue); }
+  .badge-role { background: var(--teal-light); color: #0f6e56; }
+  .badge-leader { background: var(--orange-light); color: var(--orange); }
+
+  /* ROLE INTRO BOX */
+  .role-intro { background: var(--accent-light); border-radius: 8px; padding: 12px 16px; font-size: 13px; color: var(--blue); margin-bottom: 20px; line-height: 1.5; }
+
+  /* QUESTIONS */
+  .q { margin-bottom: 22px; }
+  .q:last-child { margin-bottom: 0; }
+  .q-label { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 5px; line-height: 1.5; display: flex; gap: 4px; }
+  .q-label .req { color: var(--red); }
+  .q-hint { font-size: 12px; color: var(--muted); margin-bottom: 8px; line-height: 1.5; font-style: italic; }
+  input[type=text], select, textarea {
+    width: 100%; padding: 10px 13px; border: 1.5px solid var(--border); border-radius: 8px;
+    font-size: 14px; font-family: inherit; color: var(--text); background: var(--white);
+    transition: border-color 0.15s;
+  }
+  input[type=text]:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); }
+  textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+  select { cursor: pointer; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  /* PAIN BLOCK */
+  .pain-block { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 16px; }
+  .pain-block-title { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 16px; }
+
+  /* AI COMFORT */
+  .comfort-grid { display: flex; flex-direction: column; gap: 8px; }
+  .comfort-opt { border: 1.5px solid var(--border); border-radius: 8px; padding: 12px 14px; cursor: pointer; transition: all 0.15s; }
+  .comfort-opt:hover { border-color: var(--accent); background: var(--accent-light); }
+  .comfort-opt.selected { border-color: var(--accent); background: var(--accent-light); }
+  .comfort-opt input[type=radio] { display: none; }
+  .comfort-opt-title { font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 2px; }
+  .comfort-opt-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .comfort-opt.selected .comfort-opt-title { color: var(--blue); }
+  .comfort-opt.selected .comfort-opt-desc { color: var(--blue); }
+
+  /* RADIO GROUP */
+  .radio-group { display: flex; flex-direction: column; gap: 8px; }
+  .radio-item { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--text); cursor: pointer; }
+  .radio-item input { margin-top: 2px; accent-color: var(--accent); }
+
+  /* STRATEGIC RANKING */
+  .rank-grid { display: flex; flex-direction: column; gap: 8px; }
+  .rank-item { display: flex; align-items: center; gap: 12px; font-size: 13px; }
+  .rank-item select { width: 70px; padding: 7px 8px; }
+  .rank-item span { color: var(--text); flex: 1; }
+
+  /* DIVIDER */
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+  .sub-heading { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .sub-heading::before { content: ''; display: block; width: 16px; height: 2px; background: var(--muted); border-radius: 1px; }
+
+  /* SUBMIT */
+  .submit-wrap { text-align: center; padding: 24px 0; }
+  .btn-submit { background: #e8622a; color: white; border: none; padding: 14px 48px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; letter-spacing: 0.3px; transition: background 0.15s; }
+  .btn-submit:hover { background: #c94f1a; }
+  .btn-submit:disabled { background: var(--muted); cursor: not-allowed; }
+  .submit-note { font-size: 12px; color: var(--muted); margin-top: 10px; }
+
+  /* SUCCESS */
+  .success-screen { text-align: center; padding: 60px 24px; display: none; }
+  .success-icon { font-size: 48px; margin-bottom: 16px; }
+  .success-title { font-size: 24px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+  .success-msg { font-size: 15px; color: var(--muted); max-width: 420px; margin: 0 auto; line-height: 1.6; }
+
+  /* ERROR */
+  .field-error { font-size: 12px; color: var(--red); margin-top: 4px; display: none; }
+  input.invalid, select.invalid, textarea.invalid { border-color: var(--red); }
+
+  /* HIDDEN */
+  .hidden { display: none !important; }
+
+  @media (max-width: 600px) {
+    .wrap { padding: 16px 12px 60px; }
+    .section-card { padding: 18px 16px; }
+    .row2, .row3 { grid-template-columns: 1fr; }
+    .header-inner { flex-direction: column; align-items: flex-start; gap: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div style="display:flex;align-items:center;gap:14px">
+      <img src="data:image/png;base64,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" alt="Spotlight Energy" style="height:32px;width:auto;display:block" />
+      <div style="width:1px;height:28px;background:rgba(255,255,255,0.2)"></div>
+      <span style="font-size:14px;font-weight:500;color:rgba(255,255,255,0.9);letter-spacing:0.1px">AI Opportunity Survey</span>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:5%"></div></div>
+      <div class="progress-label" id="progressLabel">Section A</div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap" id="formWrap">
+
+  <!-- ── SECTION A ─────────────────────────────────────────── -->
+  <div class="section-card" id="secA">
+    <div class="section-header">
+      <div class="section-icon">👤</div>
+      <div>
+        <div class="section-title">Section A — About you</div>
+      </div>
+      <span class="section-badge badge-all">All roles</span>
+    </div>
+    <div class="row3">
+      <div class="q">
+        <div class="q-label">Full name <span class="req">*</span></div>
+        <input type="text" id="name" placeholder="Your name" />
+        <div class="field-error" id="err-name">Required</div>
+      </div>
+      <div class="q">
+        <div class="q-label">Team / Department <span class="req">*</span></div>
+        <select id="dept">
+          <option value="">Select department</option>
+          <option>Central</option><option>East</option><option>West</option>
+          <option>Risk</option><option>Trade control</option><option>Actualization</option>
+          <option>Accounting</option><option>Analytics</option><option>Executive</option>
+        </select>
+        <div class="field-error" id="err-dept">Required</div>
+      </div>
+      <div class="q">
+        <div class="q-label">Title <span class="req">*</span></div>
+        <select id="title" id="title">
+          <option value="">Select title</option>
+          <option>Desk manager</option><option>Executive</option><option>Trader</option>
+          <option>Scheduler</option><option>Originator</option><option>TA</option>
+          <option>Analyst/Data Op</option>
+          <option>Actualization</option><option>Risk team</option><option>Credit</option>
+          <option>Invoicing</option><option>Accounting</option><option>HR</option>
+        </select>
+        <div class="field-error" id="err-title">Required</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Continue button after A -->
+  <div id="continueWrap" style="text-align:center;margin:-8px 0 20px">
+    <button onclick="onTitleChange()" style="background:#e8622a;color:white;border:none;padding:12px 40px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit">Continue →</button>
+    <div style="font-size:12px;color:#6b7280;margin-top:6px">Select your title above then click Continue</div>
+  </div>
+
+  <!-- ── SECTION B VARIANTS ─────────────────────────────────── -->
+
+  <!-- B: Trader -->
+  <div class="section-card hidden" id="sec-b-trader">
+    <div class="section-header">
+      <div class="section-icon">📈</div>
+      <div><div class="section-title">Section B — Your daily work</div></div>
+      <span class="section-badge badge-role">Trader</span>
+    </div>
+    <div class="role-intro">Questions tailored to your role as a <strong>Trader</strong>.</div>
+    <div class="q"><div class="q-label">Walk us through your typical trading day — from pre-market open to close. <span class="req">*</span></div><div class="q-hint">Include: how you monitor positions, how you source deals, how you capture trades, and what you do at EOD</div><textarea id="bt1" placeholder="e.g. Pull overnight basis moves from ICE, check open position vs storage targets, work the phone for index deals, enter in Endur, confirm with counterparties, build EOD P&L..."></textarea></div>
+    <div class="q"><div class="q-label">What systems do you use daily and for what purpose? <span class="req">*</span></div><div class="q-hint">e.g. Katana for deal capture, Excel for position tracking, ICE/Platts for pricing, email for confirms</div><textarea id="bt2" placeholder="List each system and what you use it for..."></textarea></div>
+    <div class="q"><div class="q-label">How do you currently track your open positions and P&L during the day? <span class="req">*</span></div><div class="q-hint">Is it real-time, manual, pulled from a system, or a mix?</div><textarea id="bt3" placeholder="e.g. I maintain a personal Excel position sheet updated manually throughout the day..."></textarea></div>
+    <div class="q"><div class="q-label">How much time do you spend on non-trading tasks daily? <span class="req">*</span></div><div class="q-hint">Reporting, confirmations, data entry, emails</div>
+      <select id="bt4"><option value="">Select estimate</option><option>Less than 1 hour</option><option>1–2 hours</option><option>2–3 hours</option><option>3–4 hours</option><option>More than 4 hours</option></select></div>
+  </div>
+
+  <!-- B: Scheduler -->
+  <div class="section-card hidden" id="sec-b-scheduler">
+    <div class="section-header">
+      <div class="section-icon">🗓️</div>
+      <div><div class="section-title">Section B — Your daily work</div></div>
+      <span class="section-badge badge-role">Scheduler</span>
+    </div>
+    <div class="role-intro">Questions tailored to your role as a <strong>Scheduler</strong>.</div>
+    <div class="q"><div class="q-label">Walk us through a full day in scheduling — from morning nominations to EOD cuts. <span class="req">*</span></div><div class="q-hint">Include: which pipelines you manage, tools used to pull/submit nominations, how you handle intraday changes</div><textarea id="bs1" placeholder="e.g. Pull overnight actuals from pipeline portals at 7am, reconcile against trader book, submit morning nominations by 9am cut..."></textarea></div>
+    <div class="q"><div class="q-label">List all pipeline portals and scheduling systems you log into daily. <span class="req">*</span></div><div class="q-hint">How many separate portals do you access in a typical day?</div><textarea id="bs2" placeholder="e.g. Tallgrass, TC Energy, Enable, Panhandle — each has its own portal login and nomination format..."></textarea></div>
+    <div class="q"><div class="q-label">How do you currently reconcile scheduled volumes against traded positions? <span class="req">*</span></div><div class="q-hint">Manual spreadsheet, Katana report, or automated feed?</div><textarea id="bs3" placeholder="e.g. I manually copy nomination confirmations into a master Excel tracker and cross-check against Endur..."></textarea></div>
+    <div class="row2">
+      <div class="q"><div class="q-label">How often do you deal with nomination errors or resubmissions? <span class="req">*</span></div><select id="bs4"><option value="">Select frequency</option><option>Rarely (less than once a week)</option><option>A few times a week</option><option>Daily</option><option>Multiple times a day</option></select></div>
+      <div class="q"><div class="q-label">Time per day manually copying data between systems? <span class="req">*</span></div><select id="bs5"><option value="">Select estimate</option><option>Less than 30 min</option><option>30–60 min</option><option>1–2 hours</option><option>2–3 hours</option><option>More than 3 hours</option></select></div>
+    </div>
+  </div>
+
+  <!-- B: Originator -->
+  <div class="section-card hidden" id="sec-b-originator">
+    <div class="section-header">
+      <div class="section-icon">🤝</div>
+      <div><div class="section-title">Section B — Your daily work</div></div>
+      <span class="section-badge badge-role">Originator</span>
+    </div>
+    <div class="role-intro">Questions tailored to your role as an <strong>Originator</strong>.</div>
+    <div class="q"><div class="q-label">Describe your origination workflow — from prospect to signed deal. <span class="req">*</span></div><div class="q-hint">Include: how you find prospects, build pricing, approval steps, and track your pipeline</div><textarea id="bo1" placeholder="e.g. Pull prospect list from CRM, research counterparty credit, build pricing model in Excel, present to desk manager..."></textarea></div>
+    <div class="q"><div class="q-label">What tools do you use for prospect research, pricing, and deal tracking? <span class="req">*</span></div><textarea id="bo2" placeholder="e.g. Excel for pricing, CRM for contacts, Bloomberg for market data, email for negotiation..."></textarea></div>
+    <div class="q"><div class="q-label">How do you currently build pricing for new deals? How long does it take? <span class="req">*</span></div><textarea id="bo3" placeholder="e.g. I manually pull basis from Platts, build a spreadsheet model, run scenarios — takes 2–3 hours per prospect..."></textarea></div>
+    <div class="q"><div class="q-label">What parts of the origination process feel slowest or most manual? <span class="req">*</span></div><textarea id="bo4" placeholder="e.g. Credit approval takes days, contract redlines are tracked manually in email threads..."></textarea></div>
+  </div>
+
+  <!-- B: Risk -->
+  <div class="section-card hidden" id="sec-b-risk">
+    <div class="section-header">
+      <div class="section-icon">⚖️</div>
+      <div><div class="section-title">Section B — Your daily work</div></div>
+      <span class="section-badge badge-role">Risk / Trade Control</span>
+    </div>
+    <div class="role-intro">Questions tailored to your role in <strong>Risk or Trade Control</strong>.</div>
+    <div class="q"><div class="q-label">Walk us through how you produce daily risk reports (MTM, VaR, position limits). <span class="req">*</span></div><div class="q-hint">Include: data sources, how long it takes, systems involved, and who receives the output</div><textarea id="br1" placeholder="e.g. Pull EOD positions from Endur, run VaR model in Excel, pull forward curves from ICE, compile report, email to desk managers..."></textarea></div>
+    <div class="q"><div class="q-label">What are the most common data quality or timing issues in your workflow? <span class="req">*</span></div><textarea id="br2" placeholder="e.g. Endur positions don't always match trader books, forward curve data arrives late, back office actuals lag by a day..."></textarea></div>
+    <div class="q"><div class="q-label">How do you currently monitor limit breaches or exposure alerts intraday? <span class="req">*</span></div><textarea id="br3" placeholder="e.g. Manual check every 2 hours against position report, no real-time alerts..."></textarea></div>
+    <div class="q"><div class="q-label">How much time goes into data gathering vs. actual analysis? <span class="req">*</span></div><select id="br4"><option value="">Select split</option><option>Mostly gathering (~80% data, ~20% analysis)</option><option>More gathering than analysis (~60/40)</option><option>About even (50/50)</option><option>More analysis than gathering (40/60)</option><option>Mostly analysis (~20% data, ~80% analysis)</option></select></div>
+  </div>
+
+  <!-- B: Back Office (legacy — kept for safety) -->
+  <div class="section-card hidden" id="sec-b-backoffice">
+    <div class="section-header"><div class="section-icon">🗂️</div><div><div class="section-title">Section B — Your daily work</div></div><span class="section-badge badge-role">Back Office</span></div>
+    <div class="role-intro">Questions tailored to your <strong>Back Office</strong> role.</div>
+    <div class="q"><div class="q-label">Describe your core daily workflow <span class="req">*</span></div><textarea id="bb1" placeholder="e.g. Pull pipeline actuals, compare against nominated volumes..."></textarea></div>
+    <div class="q"><div class="q-label">What systems do you use daily? <span class="req">*</span></div><textarea id="bb2" placeholder="e.g. Katana for deal data, Excel for tracking..."></textarea></div>
+    <div class="q"><div class="q-label">How do you match invoices against deal tickets? <span class="req">*</span></div><textarea id="bb3" placeholder="Manual or automated?"></textarea></div>
+    <div class="q"><div class="q-label">How often do discrepancies occur and how long to resolve? <span class="req">*</span></div><textarea id="bb4" placeholder="Frequency and resolution time..."></textarea></div>
+    <div class="q"><div class="q-label">How much time re-keying data between systems? <span class="req">*</span></div><select id="bb5"><option value="">Select estimate</option><option>Less than 30 min</option><option>30–60 min</option><option>1–2 hours</option><option>2–3 hours</option><option>More than 3 hours</option></select></div>
+  </div>
+
+  <!-- B: Actualization -->
+  <div class="section-card hidden" id="sec-b-actualization">
+    <div class="section-header">
+      <div class="section-icon">🔄</div>
+      <div><div class="section-title">Section B — Your daily work</div></div>
+      <span class="section-badge badge-role">Actualization</span>
+    </div>
+    <div class="role-intro">Questions tailored to your <strong>Actualization</strong> role.</div>
+    <div class="q"><div class="q-label">Walk us through your daily actualization workflow — from pulling actuals to final reconciliation. <span class="req">*</span></div><div class="q-hint">Include which pipeline portals you access, how you pull actual volumes, and how you compare against nominated/scheduled volumes</div><textarea id="bact1" placeholder="e.g. Pull actuals from Tallgrass and Enable portals each morning, compare against Katana scheduled volumes, flag discrepancies to scheduling team..."></textarea></div>
+    <div class="q"><div class="q-label">How do you currently identify and resolve imbalances between scheduled and actual volumes? <span class="req">*</span></div><div class="q-hint">Manual comparison, system alerts, or a combination?</div><textarea id="bact2" placeholder="e.g. Manually compare pipeline actuals against Katana nominations in Excel, email scheduler for corrections..."></textarea></div>
+    <div class="q"><div class="q-label">What systems do you use for actualization and what does each one do? <span class="req">*</span></div><textarea id="bact3" placeholder="e.g. Katana for deal/nomination data, pipeline portals for actuals, Excel for reconciliation tracking..."></textarea></div>
+    <div class="q"><div class="q-label">How often do you deal with volume discrepancies and how long do they typically take to resolve? <span class="req">*</span></div><textarea id="bact4" placeholder="e.g. 5–10 per week, each takes 20–60 min depending on pipeline and counterparty responsiveness..."></textarea></div>
+    <div class="q"><div class="q-label">How much of your day is spent manually pulling, copying, or reformatting data? <span class="req">*</span></div><select id="bact5"><option value="">Select estimate</option><option>Less than 30 min</option><option>30–60 min</option><option>1–2 hours</option><option>2–3 hours</option><option>More than 3 hours</option></select></div>
+  </div>
+
+  <!-- B: Invoicing -->
+  <div class="section-card hidden" id="sec-b-invoicing">
+    <div class="section-header">
+      <div class="section-icon">🧾</div>
+      <div><div class="section-title">Section B — Your daily work</div></div>
+      <span class="section-badge badge-role">Invoicing</span>
+    </div>
+    <div class="role-intro">Questions tailored to your <strong>Invoicing</strong> role.</div>
+    <div class="q"><div class="q-label">Describe your end-to-end invoicing workflow — from deal confirmation to final settlement. <span class="req">*</span></div><div class="q-hint">Include: how you pull deal data, generate invoices, send to counterparties, and track payments</div><textarea id="binv1" placeholder="e.g. Pull confirmed deals from Katana, generate invoices in Excel template, email to counterparty, track payment in spreadsheet..."></textarea></div>
+    <div class="q"><div class="q-label">How do you currently match counterparty invoices against your deal records? <span class="req">*</span></div><div class="q-hint">Manual line-by-line, system matching, or a mix?</div><textarea id="binv2" placeholder="e.g. Manually compare counterparty invoices against Katana deal tickets — check price, volume, and date line by line..."></textarea></div>
+    <div class="q"><div class="q-label">What are the most common invoice discrepancies you encounter and what causes them? <span class="req">*</span></div><textarea id="binv3" placeholder="e.g. Price differences from index lag, volume mismatches from scheduling changes, wrong deal terms used..."></textarea></div>
+    <div class="q"><div class="q-label">How long does a typical invoice dispute take to resolve, and who is usually involved? <span class="req">*</span></div><textarea id="binv4" placeholder="e.g. 2–5 days, involves trader, scheduler, and counterparty back office..."></textarea></div>
+    <div class="q"><div class="q-label">How much time per week is spent on manual data entry or reformatting for invoicing? <span class="req">*</span></div><select id="binv5"><option value="">Select estimate</option><option>Less than 1 hour</option><option>1–2 hours</option><option>2–4 hours</option><option>4–8 hours</option><option>More than 8 hours</option></select></div>
+  </div>
+
+  <!-- B: Accounting -->
+  <div class="section-card hidden" id="sec-b-accounting">
+    <div class="section-header">
+      <div class="section-icon">📒</div>
+      <div><div class="section-title">Section B — Your daily work</div></div>
+      <span class="section-badge badge-role">Accounting</span>
+    </div>
+    <div class="role-intro">Questions tailored to your <strong>Accounting</strong> role.</div>
+    <div class="q"><div class="q-label">Describe your BBR process end to end. <span class="req">*</span></div><div class="q-hint">Include: which data sources you pull from, how you compile the report, who reviews it, and how long it takes</div><textarea id="bacc1" placeholder="e.g. Pull cash positions from bank portals, reconcile against Katana settlements, compile into Excel template, review with CFO, submit to lender by deadline..."></textarea></div>
+    <div class="q"><div class="q-label">What are the most time-consuming or error-prone steps in your month-end close process? <span class="req">*</span></div><div class="q-hint">e.g. reconciling trading P&L to GL, accruals, intercompany entries</div><textarea id="bacc2" placeholder="e.g. Reconciling mark-to-market P&L from Katana against GL entries takes 2 days every month-end..."></textarea></div>
+    <div class="q"><div class="q-label">How do you currently track and report financial exposure for credit facility compliance? <span class="req">*</span></div><div class="q-hint">Borrowing base, covenant tracking, lender reporting</div><textarea id="bacc3" placeholder="e.g. Manually compile borrowing base certificate from multiple Excel files and bank statements every two weeks..."></textarea></div>
+    <div class="q"><div class="q-label">What financial reports do you produce manually that feel like they should be automated? <span class="req">*</span></div><textarea id="bacc4" placeholder="e.g. Daily cash position report, weekly P&L summary for management, monthly lender package..."></textarea></div>
+    <div class="q"><div class="q-label">How much time per week is spent gathering and formatting data vs. actual analysis or review? <span class="req">*</span></div><select id="bacc5"><option value="">Select split</option><option>Mostly gathering (~80% data, ~20% analysis)</option><option>More gathering than analysis (~60/40)</option><option>About even (50/50)</option><option>More analysis (40/60)</option><option>Mostly analysis (~20% gathering)</option></select></div>
+  </div>
+
+  <!-- B: Credit -->
+  <div class="section-card hidden" id="sec-b-credit">
+    <div class="section-header">
+      <div class="section-icon">💳</div>
+      <div><div class="section-title">Section B — Your daily work</div></div>
+      <span class="section-badge badge-role">Credit</span>
+    </div>
+    <div class="role-intro">Questions tailored to your <strong>Credit</strong> role.</div>
+    <div class="q"><div class="q-label">Describe how you currently monitor and manage counterparty credit limits on a daily basis. <span class="req">*</span></div><div class="q-hint">Include: which systems you check, how often, and how you alert traders when limits are approached or breached</div><textarea id="bcr1" placeholder="e.g. Pull daily exposure report from Katana, compare against approved credit limits in spreadsheet, email desk managers if within 10% of limit..."></textarea></div>
+    <div class="q"><div class="q-label">Walk us through your credit approval workflow for a new counterparty or limit increase. <span class="req">*</span></div><div class="q-hint">Include: what information you gather, who approves, how long it takes, and where it gets bottlenecked</div><textarea id="bcr2" placeholder="e.g. Request financial statements, run D&B report, build credit memo in Word, circulate to management for approval — typically takes 3–7 days..."></textarea></div>
+    <div class="q"><div class="q-label">How do you currently track total exposure across all counterparties and deal types? <span class="req">*</span></div><div class="q-hint">Real-time system, manual spreadsheet, or periodic reports?</div><textarea id="bcr3" placeholder="e.g. Maintain a master credit spreadsheet updated daily from Katana exports — no real-time view..."></textarea></div>
+    <div class="q"><div class="q-label">What credit-related information do traders or desk managers ask you for most often? <span class="req">*</span></div><div class="q-hint">These are candidates for self-service dashboards or automated alerts</div><textarea id="bcr4" placeholder="e.g. Available credit for a specific counterparty, current exposure vs limit, status of a pending credit approval..."></textarea></div>
+    <div class="q"><div class="q-label">How much of your time is spent on routine monitoring vs. exception handling or analysis? <span class="req">*</span></div><select id="bcr5"><option value="">Select split</option><option>Mostly routine monitoring (~80%)</option><option>More monitoring than exceptions (~60/40)</option><option>About even (50/50)</option><option>More exception handling (40/60)</option><option>Mostly analysis & exceptions (~80%)</option></select></div>
+  </div>
+
+  <!-- B: Analytics -->
+  <div class="section-card hidden" id="sec-b-analytics">
+    <div class="section-header">
+      <div class="section-icon">📊</div>
+      <div><div class="section-title">Section B — Your daily work</div></div>
+      <span class="section-badge badge-role">Analytics / TA</span>
+    </div>
+    <div class="role-intro">Questions tailored to your role as an <strong>Analyst or Trading Analyst</strong>.</div>
+    <div class="q"><div class="q-label">What are the main deliverables you produce and for which teams? <span class="req">*</span></div><div class="q-hint">e.g. daily position dashboards for traders, basis curve analysis for desk managers, monthly P&L attribution for executives</div><textarea id="ba1" placeholder="Describe your regular outputs and their audience..."></textarea></div>
+    <div class="q"><div class="q-label">Where does your data come from and how do you collect it? <span class="req">*</span></div><div class="q-hint">Automated feeds, manual exports, API pulls, or a mix?</div><textarea id="ba2" placeholder="e.g. Katana exports via SQL, ICE pricing via manual download, pipeline data via email from schedulers..."></textarea></div>
+    <div class="q"><div class="q-label">What percentage of your time is data gathering vs. analysis? <span class="req">*</span></div><select id="ba3"><option value="">Select split</option><option>Mostly gathering/cleaning (~80%)</option><option>More gathering than analysis (~60/40)</option><option>About even (50/50)</option><option>More analysis (40/60)</option><option>Mostly analysis/viz (~20% gathering)</option></select></div>
+    <div class="q"><div class="q-label">What requests do you receive most often that feel repetitive or templated? <span class="req">*</span></div><div class="q-hint">e.g. "Can you pull the same basis report but for West desk?" or "Update last week's chart with new actuals"</div><textarea id="ba4" placeholder="Describe recurring ad-hoc requests that feel like they should be automated..."></textarea></div>
+  </div>
+
+  <!-- B: HR -->
+  <div class="section-card hidden" id="sec-b-hr">
+    <div class="section-header">
+      <div class="section-icon">🧑‍💼</div>
+      <div><div class="section-title">Section B — Your daily work</div></div>
+      <span class="section-badge badge-role">HR</span>
+    </div>
+    <div class="role-intro">Questions tailored to your <strong>HR</strong> role.</div>
+    <div class="q"><div class="q-label">Describe your core HR responsibilities and how you manage them week to week. <span class="req">*</span></div><textarea id="bh1" placeholder="e.g. Onboarding, payroll coordination, benefits admin, compliance tracking, employee relations..."></textarea></div>
+    <div class="q"><div class="q-label">What HR processes are currently the most manual or paper-heavy? <span class="req">*</span></div><textarea id="bh2" placeholder="e.g. Onboarding paperwork, tracking certifications, managing PTO requests via email..."></textarea></div>
+    <div class="q"><div class="q-label">What questions do employees ask you most often that you answer repeatedly? <span class="req">*</span></div><div class="q-hint">These could be great candidates for an AI-powered FAQ or HR assistant</div><textarea id="bh3" placeholder="e.g. Benefits questions, PTO balance, policy clarifications, payroll timing..."></textarea></div>
+  </div>
+
+  <!-- B: Desk Manager -->
+  <div class="section-card hidden" id="sec-b-deskmgr">
+    <div class="section-header">
+      <div class="section-icon">🖥️</div>
+      <div><div class="section-title">Section B — Your daily work</div></div>
+      <span class="section-badge badge-leader">Desk Manager</span>
+    </div>
+    <div class="role-intro">Questions tailored to your role as a <strong>Desk Manager</strong>.</div>
+    <div class="q"><div class="q-label">Describe how you start your day — what do you review, who do you check in with, and what decisions do you make before markets open? <span class="req">*</span></div><textarea id="bdm1" placeholder="e.g. Review overnight price moves, check desk position vs limits, review scheduler nominations, align with traders on day strategy..."></textarea></div>
+    <div class="q"><div class="q-label">How do you currently monitor your desk's overall position, P&L, and risk exposure throughout the day? <span class="req">*</span></div><div class="q-hint">Real-time dashboard, manual reports, trader verbal updates, or a combination?</div><textarea id="bdm2" placeholder="e.g. Rely on trader verbal updates, EOD risk report, and a personal Excel I maintain..."></textarea></div>
+    <div class="q"><div class="q-label">What information do you wish you had faster or in better format to manage your desk effectively? <span class="req">*</span></div><textarea id="bdm3" placeholder="e.g. Real-time aggregated position across all traders, intraday P&L by deal, pipeline flow alerts..."></textarea></div>
+    <div class="q"><div class="q-label">How much time per day do you spend assembling information rather than acting on it? <span class="req">*</span></div><select id="bdm4"><option value="">Select estimate</option><option>Less than 30 min</option><option>30–60 min</option><option>1–2 hours</option><option>2–3 hours</option><option>More than 3 hours</option></select></div>
+  </div>
+
+  <!-- B: Executive -->
+  <div class="section-card hidden" id="sec-b-exec">
+    <div class="section-header">
+      <div class="section-icon">🏢</div>
+      <div><div class="section-title">Section B — Your daily work</div></div>
+      <span class="section-badge badge-leader">Executive</span>
+    </div>
+    <div class="role-intro">Questions tailored to your role as an <strong>Executive</strong>.</div>
+    <div class="q"><div class="q-label">What does your morning briefing look like — what information do you need before you can make decisions for the day? <span class="req">*</span></div><div class="q-hint">What do you currently have vs. what do you wish you had?</div><textarea id="be1" placeholder="e.g. I get a daily email summary from Risk but it arrives at 7pm the prior day — I want real-time exposure across all desks..."></textarea></div>
+    <div class="q"><div class="q-label">What business decisions do you currently make with incomplete, late, or low-confidence data? <span class="req">*</span></div><div class="q-hint">e.g. counterparty credit exposure, regional position sizing, power market entry, storage strategy</div><textarea id="be2" placeholder="Describe decisions where you wish you had better or faster information..."></textarea></div>
+    <div class="q"><div class="q-label">Where does the organization lose the most revenue or incur unnecessary cost due to slow or manual processes? <span class="req">*</span></div><div class="q-hint">Quantify if possible — imbalance charges, missed opportunities, late settlements, etc.</div><textarea id="be3" placeholder="e.g. We estimate ~$X/month in pipeline imbalance charges from nomination timing errors..."></textarea></div>
+  </div>
+
+  <!-- ── SECTION C: IC FRICTION POINTS ───────────────────────────── -->
+  <div class="section-card hidden" id="sec-c-ic">
+    <div class="section-header">
+      <div class="section-icon">⚡</div>
+      <div><div class="section-title">Section C — Friction Points</div></div>
+      <span class="section-badge badge-all">1 required</span>
+    </div>
+    <div class="role-intro">A friction point is any task that feels slow, repetitive, error-prone, or frustrating. You do not need to know if AI can solve it — just describe it honestly and specifically.</div>
+
+    <div class="pain-block">
+      <div class="pain-block-title">Friction Point #1 — Required</div>
+      <div class="q"><div class="q-label">Describe the task or problem <span class="req">*</span></div><div class="q-hint">Be specific — include which system, how often, and what the downstream impact is</div><textarea id="pp1_desc" placeholder="e.g. Every morning I manually pull nominations from 3 pipeline portals into a spreadsheet. Takes 1.5 hrs, error-prone..."></textarea></div>
+      <div class="row2">
+        <div class="q"><div class="q-label">How often? <span class="req">*</span></div><select id="pp1_freq"><option value="">Select</option><option>Multiple times a day</option><option>Daily</option><option>Several times a week</option><option>Weekly</option><option>Monthly</option></select></div>
+        <div class="q"><div class="q-label">Time lost per week? <span class="req">*</span></div><select id="pp1_time"><option value="">Select</option><option>Less than 1 hour</option><option>1–2 hours</option><option>2–4 hours</option><option>4–8 hours</option><option>More than 8 hours</option></select></div>
+      </div>
+      <div class="q"><div class="q-label">Business impact when this goes wrong?</div><textarea id="pp1_impact" style="min-height:60px" placeholder="e.g. delayed confirms, imbalance charges, late P&L, wrong positions..."></textarea></div>
+      <div class="q"><div class="q-label">Any workarounds you've built?</div><textarea id="pp1_workaround" style="min-height:56px" placeholder="e.g. built a macro but it breaks when the portal format changes..."></textarea></div>
+    </div>
+
+    <div class="pain-block">
+      <div class="pain-block-title">Friction Point #2 — Optional</div>
+      <div class="q"><div class="q-label">Describe the task or problem</div><textarea id="pp2_desc" placeholder="Add a second friction point if you have one..."></textarea></div>
+      <div class="row2">
+        <div class="q"><div class="q-label">How often?</div><select id="pp2_freq"><option value="">Select</option><option>Multiple times a day</option><option>Daily</option><option>Several times a week</option><option>Weekly</option><option>Monthly</option></select></div>
+        <div class="q"><div class="q-label">Time lost per week?</div><select id="pp2_time"><option value="">Select</option><option>Less than 1 hour</option><option>1–2 hours</option><option>2–4 hours</option><option>4–8 hours</option><option>More than 8 hours</option></select></div>
+      </div>
+      <div class="q"><div class="q-label">Business impact?</div><textarea id="pp2_impact" style="min-height:56px" placeholder="Downstream consequences..."></textarea></div>
+    </div>
+  </div>
+
+  <!-- ── SECTION C: LEADER FRICTION POINTS ──────────────────────── -->
+  <div class="section-card hidden" id="sec-c-leader">
+    <div class="section-header">
+      <div class="section-icon">⚡</div>
+      <div><div class="section-title">Section C — Friction Points & team observations</div></div>
+      <span class="section-badge badge-leader">3 required</span>
+    </div>
+    <div class="role-intro">Each friction point can be yours personally, something you observe across your team, or both. Use the scope field on each block. All 3 are required.</div>
+
+    <!-- PP 1, 2, 3 for leaders -->
+    <div id="leader-pp-blocks"></div>
+
+    <hr class="section-divider">
+    <div class="sub-heading">Team-level diagnostics</div>
+    <div class="q"><div class="q-label">What handoffs between your team and other teams (Risk, Back office, Analysts) feel broken or slow? <span class="req">*</span></div><textarea id="l_handoffs" placeholder="e.g. Position data takes too long to reach Risk for EOD mark, causing late P&L reports..."></textarea></div>
+    <div class="q"><div class="q-label">If you could eliminate one task your team does today that adds zero strategic value, what would it be?</div><textarea id="l_busywork" placeholder="Be honest — what feels like pure busywork on your desk?"></textarea></div>
+    <div class="q"><div class="q-label">Estimate total hours per week your team loses to tasks that could be automated</div><select id="l_hours"><option value="">Select estimate</option><option>Less than 5 hours</option><option>5–10 hours</option><option>10–20 hours</option><option>20–40 hours</option><option>More than 40 hours</option></select></div>
+  </div>
+
+  <!-- ── SECTION D: STRATEGIC (leaders only) ─────────────────── -->
+  <div class="section-card hidden" id="sec-d-strategic">
+    <div class="section-header">
+      <div class="section-icon">🎯</div>
+      <div><div class="section-title">Section D — Strategic priorities & data gaps</div></div>
+      <span class="section-badge badge-leader">Leaders only</span>
+    </div>
+    <div class="q"><div class="q-label">What market intelligence or competitive signals do you currently gather manually that you'd want automated? <span class="req">*</span></div><textarea id="st_intel" placeholder="e.g. Monitoring basis differentials across hubs, pipeline capacity postings, power price curves, weather-driven demand signals..."></textarea></div>
+    <div class="q"><div class="q-label">If an AI assistant could brief you every morning on one thing about your book or market, what would it be? <span class="req">*</span></div><textarea id="st_brief" placeholder="e.g. Overnight price moves vs open exposure, storage vs withdrawal targets, regional basis outlook..."></textarea></div>
+    <div class="q">
+      <div class="q-label">Rank AI capabilities by priority (1 = highest, 5 = lowest — leave blank if not relevant)</div>
+      <div class="rank-grid" id="rankGrid"></div>
+    </div>
+  </div>
+
+  <!-- ── SECTION E: AI READINESS (all) ──────────────────────── -->
+  <div class="section-card hidden" id="sec-e-aiready">
+    <div class="section-header">
+      <div class="section-icon">🤖</div>
+      <div><div class="section-title">Section E — AI readiness & open thoughts</div></div>
+      <span class="section-badge badge-all">All roles</span>
+    </div>
+    <div class="q">
+      <div class="q-label">How would you describe your current AI experience level? <span class="req">*</span></div>
+      <div class="comfort-grid" id="comfortGrid"></div>
+    </div>
+    <div class="q">
+      <div class="q-label">Have you used any AI tools for work — officially or on your own?</div>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="ai_usage" value="Yes, regularly as part of my workflow"> Yes, regularly as part of my workflow</label>
+        <label class="radio-item"><input type="radio" name="ai_usage" value="Yes, occasionally for specific tasks"> Yes, occasionally for specific tasks</label>
+        <label class="radio-item"><input type="radio" name="ai_usage" value="Tried it once or twice out of curiosity"> Tried it once or twice out of curiosity</label>
+        <label class="radio-item"><input type="radio" name="ai_usage" value="No, never used it"> No, never used it</label>
+      </div>
+    </div>
+    <div class="q">
+      <div class="q-label">Which AI assistant do you prefer or are most familiar with?</div>
+      <div class="q-hint">Select all that apply</div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px" id="llmPrefWrap">
+        <label style="display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer"><input type="checkbox" name="llm_pref" value="ChatGPT" style="accent-color:#e8622a;width:16px;height:16px"> ChatGPT (OpenAI)</label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer"><input type="checkbox" name="llm_pref" value="Claude" style="accent-color:#e8622a;width:16px;height:16px"> Claude (Anthropic)</label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer"><input type="checkbox" name="llm_pref" value="Gemini" style="accent-color:#e8622a;width:16px;height:16px"> Gemini (Google)</label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer"><input type="checkbox" name="llm_pref" value="Copilot" style="accent-color:#e8622a;width:16px;height:16px"> Microsoft Copilot</label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer"><input type="checkbox" name="llm_pref" value="Grok" style="accent-color:#e8622a;width:16px;height:16px"> Grok (xAI)</label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer"><input type="checkbox" name="llm_pref" value="Perplexity" style="accent-color:#e8622a;width:16px;height:16px"> Perplexity</label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer"><input type="checkbox" name="llm_pref" value="None" style="accent-color:#e8622a;width:16px;height:16px"> None — I haven't used any</label>
+      </div>
+    </div>
+    <div class="q"><div class="q-label">What concerns, if any, do you have about AI being introduced into your work?</div><div class="q-hint">No wrong answers — concerns help us design responsibly and build trust into every tool</div><textarea id="ai_concerns" placeholder="e.g. Worried about accuracy on nominations, not sure I can trust AI outputs for trade decisions, concerned about data privacy..."></textarea></div>
+    <div class="q"><div class="q-label">Is there anything else — a process, frustration, or opportunity — that we haven't asked you about?</div><textarea id="ai_open" placeholder="Open space — say anything you think is relevant..."></textarea></div>
+  </div>
+
+  <!-- ── SUBMIT ──────────────────────────────────────────────── -->
+  <div class="submit-wrap hidden" id="submitWrap">
+    <button class="btn-submit" onclick="submitSurvey()" id="submitBtn">Submit Response</button>
+    <div class="submit-note">🔒 Responses are attributed and reviewed only by AI Solutions leadership.</div>
+  </div>
+
+</div><!-- /wrap -->
+
+<!-- SUCCESS -->
+<div class="success-screen" id="successScreen">
+  <div style="margin-bottom:24px"><img src="data:image/png;base64,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" alt="Spotlight Energy" style="height:36px;width:auto" /></div>
+  <div class="success-icon">✅</div>
+  <div class="success-title">Thank you — response recorded!</div>
+  <div class="success-msg">Your input directly shapes which AI tools we build first. We'll follow up with you individually based on your responses.<br><br>This survey runs quarterly. You'll be invited again in 3 months.</div>
+</div>
+
+<script>
+// ─── CONFIG ───────────────────────────────────────────────
+const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+
+// ─── ROLE MAPPING ──────────────────────────────────────────
+const ROLE_SECTION = {
+  'Trader':       'trader',
+  'Scheduler':    'scheduler',
+  'Originator':   'originator',
+  'TA':           'analytics',
+  'Analyst/Data Op': 'analytics',
+  'Risk team':    'risk',
+  'Actualization': 'actualization',
+  'Credit':        'credit',
+  'Invoicing':     'invoicing',
+  'Accounting':    'accounting',
+  'HR':           'hr',
+  'Desk manager': 'deskmgr',
+  'Executive':    'exec'
+};
+const LEADER_ROLES = ['Desk manager', 'Executive'];
+const ALL_B = ['trader','scheduler','originator','analytics','risk','backoffice','actualization','invoicing','accounting','credit','hr','deskmgr','exec'];
+
+// ─── BUILD LEADER PP BLOCKS ────────────────────────────────
+const SCOPE_OPTS = ["My own friction point", "My team's friction point", "Both — mine and my team's"];
+const FREQ_OPTS  = ["Multiple times a day","Daily","Several times a week","Weekly","Monthly"];
+const TIME_OPTS  = ["Less than 1 hour","1–2 hours","2–4 hours","4–8 hours","More than 8 hours"];
+
+function buildLeaderPPBlocks() {
+  const container = document.getElementById('leader-pp-blocks');
+  container.innerHTML = '';
+  for (let n = 1; n <= 3; n++) {
+    const div = document.createElement('div');
+    div.className = 'pain-block';
+    div.innerHTML = `
+      <div class="pain-block-title">Friction Point #${n} — Required</div>
+      <div class="q"><div class="q-label">Describe the task or problem <span class="req">*</span></div>
+        <div class="q-hint">Be specific — include which role or team is affected, which system, and what goes wrong</div>
+        <textarea id="lpp${n}_desc" placeholder="e.g. Schedulers manually reconcile nominations across 4 pipelines each morning..."></textarea></div>
+      <div class="row3">
+        <div class="q"><div class="q-label">Scope <span class="req">*</span></div>
+          <select id="lpp${n}_scope"><option value="">Select</option>${SCOPE_OPTS.map(o=>`<option>${o}</option>`).join('')}</select></div>
+        <div class="q"><div class="q-label">How often? <span class="req">*</span></div>
+          <select id="lpp${n}_freq"><option value="">Select</option>${FREQ_OPTS.map(o=>`<option>${o}</option>`).join('')}</select></div>
+        <div class="q"><div class="q-label">Time lost per week? <span class="req">*</span></div>
+          <select id="lpp${n}_time"><option value="">Select</option>${TIME_OPTS.map(o=>`<option>${o}</option>`).join('')}</select></div>
+      </div>
+      <div class="q"><div class="q-label">Business impact?</div>
+        <textarea id="lpp${n}_impact" style="min-height:56px" placeholder="Downstream consequences..."></textarea></div>
+    `;
+    container.appendChild(div);
+  }
+}
+
+// ─── BUILD AI COMFORT GRID ─────────────────────────────────
+const COMFORT_LEVELS = [
+  { title: 'Level 1 — No experience', desc: 'I have never used AI tools or heard of them in practice' },
+  { title: 'Level 2 — Aware', desc: 'I know what ChatGPT or Copilot is but have never tried them for work' },
+  { title: 'Level 3 — Casual user', desc: 'I use ChatGPT, Claude, or Copilot occasionally — drafting emails, summarizing docs, quick questions' },
+  { title: 'Level 4 — Power user', desc: 'I use LLMs regularly, know how to prompt effectively, and build workflows around them' },
+  { title: 'Level 5 — Technical', desc: 'I have used LLM APIs, built prompts programmatically, or integrated AI into tools and pipelines' }
+];
+
+function buildComfortGrid() {
+  const grid = document.getElementById('comfortGrid');
+  COMFORT_LEVELS.forEach((l, i) => {
+    const div = document.createElement('label');
+    div.className = 'comfort-opt';
+    div.innerHTML = `<input type="radio" name="ai_level" value="${l.title}"><div class="comfort-opt-title">${l.title}</div><div class="comfort-opt-desc">${l.desc}</div>`;
+    div.onclick = () => document.querySelectorAll('.comfort-opt').forEach(el => el.classList.remove('selected'));
+    div.onclick = () => { document.querySelectorAll('.comfort-opt').forEach(el => el.classList.remove('selected')); div.classList.add('selected'); };
+    grid.appendChild(div);
+  });
+}
+
+// ─── BUILD RANKING GRID ────────────────────────────────────
+const AI_CAPS = [
+  'Automated P&L, position & balance reporting',
+  'Real-time nomination & confirmation reconciliation',
+  'Market intelligence & price signal monitoring',
+  'AI-assisted contract & deal review',
+  'Predictive risk & credit exposure alerts',
+  'Power market analytics & demand forecasting',
+  'Internal AI assistant / knowledge base for staff',
+  'Counterparty & credit risk scoring automation'
+];
+
+function buildRankGrid() {
+  const grid = document.getElementById('rankGrid');
+  AI_CAPS.forEach((cap, i) => {
+    const div = document.createElement('div');
+    div.className = 'rank-item';
+    div.innerHTML = `<select id="rank_${i}"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select><span>${cap}</span>`;
+    grid.appendChild(div);
+  });
+}
+
+// ─── TITLE CHANGE HANDLER ──────────────────────────────────
+function onTitleChange() {
+  const title = document.getElementById('title').value;
+  if (!title) { alert('Please select your role title first.'); return; }
+  const role = ROLE_SECTION[title];
+  const isLeader = LEADER_ROLES.includes(title);
+
+  // Hide all B sections
+  ALL_B.forEach(r => document.getElementById('sec-b-' + r).classList.add('hidden'));
+
+  // Show correct B
+  if (role) document.getElementById('sec-b-' + role).classList.remove('hidden');
+
+  // Show correct C
+  document.getElementById('sec-c-ic').classList.toggle('hidden', isLeader);
+  document.getElementById('sec-c-leader').classList.toggle('hidden', !isLeader);
+
+  // Show strategic for leaders
+  document.getElementById('sec-d-strategic').classList.toggle('hidden', !isLeader);
+
+  // Always show AI readiness and submit
+  document.getElementById('sec-e-aiready').classList.remove('hidden');
+  document.getElementById('submitWrap').classList.remove('hidden');
+
+  // Hide continue button
+  var cw = document.getElementById('continueWrap');
+  if (cw) cw.style.display = 'none';
+
+  updateProgress(title);
+
+  // Scroll to Section B
+  setTimeout(function() {
+    var secB = document.getElementById('sec-b-' + role);
+    if (secB) secB.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
+}
+
+function updateProgress(title) {
+  const isLeader = LEADER_ROLES.includes(title);
+  const steps    = isLeader ? ['A','B','C','D','E'] : ['A','B','C','D'];
+  const total    = steps.length;
+
+  // Determine current step based on scroll position
+  const secMap = isLeader
+    ? [['secA',0],['sec-b-'+ROLE_SECTION[title],1],['sec-c-leader',2],['sec-d-strategic',3],['sec-e-aiready',4]]
+    : [['secA',0],['sec-b-'+ROLE_SECTION[title],1],['sec-c-ic',2],['sec-e-aiready',3]];
+
+  let currentStep = 0;
+  secMap.forEach(([id, step]) => {
+    const el = document.getElementById(id);
+    if (el && !el.classList.contains('hidden')) {
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight * 0.6) currentStep = step;
+    }
+  });
+
+  const pct   = Math.round(((currentStep + 1) / total) * 100);
+  const fill  = document.getElementById('progressFill');
+  const label = document.getElementById('progressLabel');
+  fill.style.width  = pct + '%';
+
+  const sectionNames = isLeader
+    ? ['About you','Daily work','Friction Points','Strategic','AI readiness']
+    : ['About you','Daily work','Friction Points','AI readiness'];
+
+  label.textContent = 'Section ' + steps[currentStep] + ' — ' + sectionNames[currentStep];
+}
+
+// Update progress on scroll
+window.addEventListener('scroll', function() {
+  const title = getVal('title');
+  if (title) updateProgress(title);
+}, { passive: true });
+
+// ─── VALIDATION ────────────────────────────────────────────
+function getVal(id) {
+  const el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+
+function validateRequired(id) {
+  const val = getVal(id);
+  const el = document.getElementById(id);
+  const err = document.getElementById(`err-${id}`);
+  if (!val) {
+    el && el.classList.add('invalid');
+    err && (err.style.display = 'block');
+    return false;
+  }
+  el && el.classList.remove('invalid');
+  err && (err.style.display = 'none');
+  return true;
+}
+
+// ─── COLLECT DATA ──────────────────────────────────────────
+function collectData() {
+  const title = getVal('title');
+  const role  = ROLE_SECTION[title] || '';
+  const isLeader = LEADER_ROLES.includes(title);
+
+  // Role-specific B fields
+  const bFields = {
+    trader: ['bt1','bt2','bt3','bt4'],
+    scheduler: ['bs1','bs2','bs3','bs4','bs5'],
+    originator: ['bo1','bo2','bo3','bo4'],
+    risk: ['br1','br2','br3','br4'],
+    backoffice:     ['bb1','bb2','bb3','bb4','bb5'],
+    actualization:  ['bact1','bact2','bact3','bact4','bact5'],
+    invoicing:      ['binv1','binv2','binv3','binv4','binv5'],
+    accounting:     ['bacc1','bacc2','bacc3','bacc4','bacc5'],
+    credit:         ['bcr1','bcr2','bcr3','bcr4','bcr5'],
+    analytics: ['ba1','ba2','ba3','ba4'],
+    hr: ['bh1','bh2','bh3'],
+    deskmgr: ['bdm1','bdm2','bdm3','bdm4'],
+    exec: ['be1','be2','be3']
+  };
+
+  const row = {
+    timestamp: new Date().toISOString(),
+    name: getVal('name'),
+    dept: getVal('dept'),
+    title,
+    role
+  };
+
+  // B answers
+  (bFields[role] || []).forEach(id => { row[id] = getVal(id); });
+
+  if (!isLeader) {
+    // IC friction points
+    ['desc','freq','time','impact','workaround'].forEach(f => { row[`pp1_${f}`] = getVal(`pp1_${f}`); });
+    ['desc','freq','time','impact'].forEach(f => { row[`pp2_${f}`] = getVal(`pp2_${f}`); });
+  } else {
+    // Leader friction points
+    for (let n = 1; n <= 3; n++) {
+      ['desc','scope','freq','time','impact'].forEach(f => { row[`lpp${n}_${f}`] = getVal(`lpp${n}_${f}`); });
+    }
+    row.l_handoffs  = getVal('l_handoffs');
+    row.l_busywork  = getVal('l_busywork');
+    row.l_hours     = getVal('l_hours');
+    row.st_intel    = getVal('st_intel');
+    row.st_brief    = getVal('st_brief');
+    AI_CAPS.forEach((_, i) => { row[`rank_${i}`] = getVal(`rank_${i}`); });
+  }
+
+  // AI readiness
+  const lvlEl = document.querySelector('input[name="ai_level"]:checked');
+  row.ai_level    = lvlEl ? lvlEl.value : '';
+  const useEl = document.querySelector('input[name="ai_usage"]:checked');
+  row.ai_usage    = useEl ? useEl.value : '';
+  const llmChecked = Array.from(document.querySelectorAll('input[name="llm_pref"]:checked')).map(el => el.value);
+  row.llm_pref    = llmChecked.join(', ');
+  row.ai_concerns = getVal('ai_concerns');
+  row.ai_open     = getVal('ai_open');
+
+  return row;
+}
+
+// ─── SHAREPOINT AUTH + SUBMIT ─────────────────────────────
+
+// Simple approach: store full response as JSON in one column
+// SharePoint List needs: Title (default) + Response (Multiple lines of text)
+
+async function submitSurvey() {
+  // Validate Section A
+  const aOk = ['name','dept','title'].map(validateRequired).every(Boolean);
+  if (!aOk) { document.getElementById('secA').scrollIntoView({ behavior: 'smooth' }); return; }
+
+  const title    = getVal('title');
+  const isLeader = LEADER_ROLES.includes(title);
+
+  // Validate friction points
+  if (!isLeader) {
+    const pp1Ok = ['pp1_desc','pp1_freq','pp1_time'].map(id => {
+      const val = getVal(id); const el = document.getElementById(id);
+      if (!val) { el && el.classList.add('invalid'); return false; }
+      el && el.classList.remove('invalid'); return true;
+    }).every(Boolean);
+    if (!pp1Ok) { document.getElementById('sec-c-ic').scrollIntoView({ behavior: 'smooth' }); return; }
+  } else {
+    let ok = true;
+    for (let n = 1; n <= 3; n++) {
+      ['desc','scope','freq','time'].forEach(f => {
+        const id = `lpp${n}_${f}`; const val = getVal(id); const el = document.getElementById(id);
+        if (!val) { el && el.classList.add('invalid'); ok = false; }
+        else el && el.classList.remove('invalid');
+      });
+    }
+    if (!getVal('l_handoffs')) { document.getElementById('l_handoffs').classList.add('invalid'); ok = false; }
+    if (!ok) { document.getElementById('sec-c-leader').scrollIntoView({ behavior: 'smooth' }); return; }
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
+
+  const data = collectData();
+
+  if (APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+    console.log('Demo mode — response:', data);
+    showSuccess();
+    return;
+  }
+
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    showSuccess();
+  } catch (err) {
+    console.error(err);
+    btn.disabled = false;
+    btn.textContent = 'Submit Response';
+    alert('Submission failed. Please try again.');
+  }
+}
+
+function showSuccess() {
+  document.getElementById('formWrap').style.display = 'none';
+  document.querySelector('.header').style.display = 'none';
+  document.getElementById('successScreen').style.display = 'block';
+}
+
+// ─── INIT ──────────────────────────────────────────────────
+buildLeaderPPBlocks();
+buildComfortGrid();
+buildRankGrid();
+
+// Belt-and-suspenders: attach change listener directly
+document.addEventListener('DOMContentLoaded', function() {
+  var t = document.getElementById('title');
+  if (t) t.addEventListener('change', onTitleChange);
+});
+// Also try immediately in case DOM already loaded
+(function() {
+  var t = document.getElementById('title');
+  if (t) t.addEventListener('change', onTitleChange);
+})();
+</script>
+</body>
+</html>
